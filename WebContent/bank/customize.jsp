@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@page import="com.ibm.security.appscan.altoromutual.util.ServletUtil"%>
 
 <%
 /**
@@ -32,7 +33,17 @@ IBM AltoroJ
 			String content = request.getParameter("content");
 			if (content != null && !content.equalsIgnoreCase("customize.jsp")){
 				if (content.startsWith("http://") || content.startsWith("https://")){
-					response.sendRedirect(content);
+					// Only allow redirects back to this application's own host (prevents open redirect)
+					java.net.URI redirectTarget = null;
+					try {
+						redirectTarget = new java.net.URI(content);
+					} catch (java.net.URISyntaxException e) {
+						redirectTarget = null;
+					}
+					if (redirectTarget != null && redirectTarget.getHost() != null
+							&& redirectTarget.getHost().equalsIgnoreCase(request.getServerName())) {
+						response.sendRedirect(content);
+					}
 				}
 			}
 		%>
@@ -41,7 +52,7 @@ IBM AltoroJ
 		
 		<form method="post">
 		  <p>
-		  Current Language: <%=(request.getParameter("lang")==null)?"":request.getParameter("lang")%>
+		  Current Language: <%=ServletUtil.sanitizeWeb((request.getParameter("lang")==null)?"":request.getParameter("lang"))%>
 		  </p>
 		
 		  <p>
