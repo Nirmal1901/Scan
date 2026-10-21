@@ -19,9 +19,11 @@ function loadPage() {
 	var job = getParameter("job");
 	if (job && job.length > 0) {
 		var sp = job.split(':');
-		if (sp.length == 2 && jobs[sp[1]] && jobs[sp[1]] != "") {
+		/* only allow lookups within the fixed jobs list above (no inherited properties) */
+		if (sp.length == 2 && jobs.hasOwnProperty(sp[1]) && jobs[sp[1]] && jobs[sp[1]] != "") {
 			/* check if job exists */
-			if (jobs[sp[1]][sp[0]] && jobs[sp[1]][sp[0]] != "") {
+			if (jobs[sp[1]].hasOwnProperty(sp[0]) && jobs[sp[1]][sp[0]] && jobs[sp[1]][sp[0]] != "") {
+				/* redirect target is always one of the constant values defined above */
 				document.location.href = "index.jsp?content="+jobs[sp[1]][sp[0]];
 			} else {
 				/* tell the user the job isn't open anymore */

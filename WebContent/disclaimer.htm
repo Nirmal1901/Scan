@@ -9,14 +9,33 @@
   </style>
   <script>
 
+    // Returns u only when it is an absolute http/https URL with no markup or
+    // quote characters, otherwise "" (prevents untrusted redirect targets).
+    function safeDst(u) {
+      return /^https?:\/\/[^\s<>"']+$/i.test(u) ? u : "";
+    }
+
+    // True only when u targets exactly the host that served this page.
+    function isSameSite(u) {
+      var a = document.createElement("a");
+      a.href = u;
+      return a.hostname != "" && a.hostname == document.location.hostname;
+    }
+
+    // HTML-encodes text before it is written into the page body.
+    function escHtml(s) {
+      return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;")
+              .replace(/"/g,"&quot;").replace(/'/g,"&#39;");
+    }
+
     function go() {
 	    var iPos = document.URL.indexOf("url=")+4;
-    	var sDst = document.URL.substring(iPos,document.URL.length); 
+    	var sDst = safeDst(document.URL.substring(iPos,document.URL.length)); 
         if (window.opener) {
-      		window.opener.location.href = sDst;
+      		if ( sDst != "" ) { window.opener.location.href = sDst; }
       		cl();
         } else {
-        	window.location.href = sDst;
+        	if ( sDst != "" ) { window.location.href = sDst; }
         }
     }
 
@@ -25,14 +44,14 @@
     }
 
     var iPos = document.URL.indexOf("url=")+4;
-  	var sDst = document.URL.substring(iPos,document.URL.length);
+  	var sDst = safeDst(document.URL.substring(iPos,document.URL.length));
     // if redirection is in the application's domain, don't ask for authorization
-	if ( sDst.indexOf("http") == 0 && sDst.indexOf(document.location.hostname) != -1 ) {
+	if ( sDst != "" && isSameSite(sDst) ) {
 		if (window.opener) {
-      		window.opener.location.href = "http" + sDst.substring(4);
+      		if ( sDst != "" ) { window.opener.location.href = sDst; }
       		cl();
         } else {
-        	window.location.href = "http" + sDst.substring(4);
+        	if ( sDst != "" ) { window.location.href = sDst; }
         }
 	}
 
@@ -47,7 +66,7 @@
       <td>
         <p>This hyperlink allows you to access a third party website:
         <br /><br />
-        <b><script>document.write(encodeURI(sDst));</script></b>
+        <b><script>document.write(escHtml(sDst));</script></b>
         <br /><br />
         Please read the privacy policy of the linked website, which
         may differ from the privacy policy of the Altoro Mutual website.
