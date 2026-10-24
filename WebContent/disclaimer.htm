@@ -9,14 +9,53 @@
   </style>
   <script>
 
+    // Destinations this page is allowed to send the user to. The "url" query
+    // string parameter is only used as a lookup key into this hard-coded table;
+    // it is never assigned to location.href.
+    var ROUTES = {
+      "netscape": "http://www.netscape.com",
+      "microsoft": "http://www.microsoft.com",
+      "home": "index.jsp"
+    };
+
+    // Returns the value of the "url" parameter of the current page, or "" when
+    // the parameter is absent. Used for display and for the allow-list lookup.
+    function urlParam() {
+      var sValue = "";
+      var iStart = document.URL.indexOf("url=");
+      if (iStart != -1) {
+        sValue = document.URL.substring(iStart + 4, document.URL.length);
+        var iAmp = sValue.indexOf("&");
+        if (iAmp != -1) {
+          sValue = sValue.substring(0, iAmp);
+        }
+      }
+      return sValue;
+    }
+
+    // Maps the "url" parameter to a key of ROUTES, falling back to the constant
+    // "home" page when the value is not allow-listed. Accepts both the short key
+    // ("netscape") and the full URL the static pages link with.
+    function routeKey() {
+      var sValue = urlParam();
+      for (var sName in ROUTES) {
+        if (ROUTES.hasOwnProperty(sName) &&
+            (sValue == sName || sValue == ROUTES[sName])) {
+          return sName;
+        }
+      }
+      return "home";
+    }
+
+    // Resolved once - the page URL does not change while the page is open.
+    var sKey = routeKey();
+
     function go() {
-	    var iPos = document.URL.indexOf("url=")+4;
-    	var sDst = document.URL.substring(iPos,document.URL.length); 
         if (window.opener) {
-      		window.opener.location.href = sDst;
+      		window.opener.location.href = ROUTES[sKey];
       		cl();
         } else {
-        	window.location.href = sDst;
+        	window.location.href = ROUTES[sKey];
         }
     }
 
@@ -24,15 +63,13 @@
       window.close();
     }
 
-    var iPos = document.URL.indexOf("url=")+4;
-  	var sDst = document.URL.substring(iPos,document.URL.length);
     // if redirection is in the application's domain, don't ask for authorization
-	if ( sDst.indexOf("http") == 0 && sDst.indexOf(document.location.hostname) != -1 ) {
+	if ( ROUTES[sKey].indexOf("http") == 0 && ROUTES[sKey].indexOf(document.location.hostname) != -1 ) {
 		if (window.opener) {
-      		window.opener.location.href = "http" + sDst.substring(4);
+      		window.opener.location.href = ROUTES[sKey];
       		cl();
         } else {
-        	window.location.href = "http" + sDst.substring(4);
+        	window.location.href = ROUTES[sKey];
         }
 	}
 
@@ -47,7 +84,12 @@
       <td>
         <p>This hyperlink allows you to access a third party website:
         <br /><br />
-        <b><script>document.write(encodeURI(sDst));</script></b>
+        <b id="destination"></b>
+        <script>
+          // Fill the placeholder with plain text - no HTML string is built and the
+          // value is never parsed as markup.
+          document.getElementById("destination").textContent = ROUTES[sKey];
+        </script>
         <br /><br />
         Please read the privacy policy of the linked website, which
         may differ from the privacy policy of the Altoro Mutual website.

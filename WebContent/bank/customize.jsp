@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 
 <%
 /**
@@ -29,10 +30,23 @@ IBM AltoroJ
 		<div class="fl" style="width: 99%;">
 		
 		<%
+			/*
+			 * Only redirect to a fixed allow-list of trusted, internal pages.
+			 * The request parameter is used solely as a lookup key -- unknown
+			 * or externally supplied destinations are ignored.
+			 */
+			java.util.Map<String, String> allowedRedirects = new java.util.HashMap<String, String>();
+			allowedRedirects.put("home", request.getContextPath() + "/index.jsp");
+			allowedRedirects.put("customize", request.getContextPath() + "/bank/customize.jsp");
+			allowedRedirects.put("accounts", request.getContextPath() + "/bank/main.jsp");
+			allowedRedirects.put("feedback", request.getContextPath() + "/feedback.jsp");
+			allowedRedirects.put("subscribe", request.getContextPath() + "/subscribe.jsp");
+
 			String content = request.getParameter("content");
 			if (content != null && !content.equalsIgnoreCase("customize.jsp")){
-				if (content.startsWith("http://") || content.startsWith("https://")){
-					response.sendRedirect(content);
+				String redirectTarget = allowedRedirects.get(content);
+				if (redirectTarget != null){
+					response.sendRedirect(redirectTarget);
 				}
 			}
 		%>
@@ -41,7 +55,13 @@ IBM AltoroJ
 		
 		<form method="post">
 		  <p>
-		  Current Language: <%=(request.getParameter("lang")==null)?"":request.getParameter("lang")%>
+		  Current Language: <%
+		  	String lang = request.getParameter("lang");
+		  	if (lang == null) {
+		  		lang = "";
+		  	}
+		  	out.print(StringEscapeUtils.escapeHtml(lang));
+		  %>
 		  </p>
 		
 		  <p>
