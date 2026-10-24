@@ -10,6 +10,16 @@ var jobs = {
 		"Sales":{"MortgageLendingAccountExecutive":"jobs/20061024.htm"}
 };
 
+/* allow-list of full, hard-coded destination pages for each job opening */
+var jobPages = {
+		"ExecutiveAssistant:Administration":"index.jsp?content=jobs/20061023.htm",
+		"Teller:ConsumaerBanking":"index.jsp?content=jobs/20061019.htm",
+		"CustomerServiceRepresentative:CustomerService":"index.jsp?content=jobs/20061026.htm",
+		"LoyaltyMarketingProgramManager:Marketing":"index.jsp?content=jobs/20061025.htm",
+		"OperationalRiskManager:RiskManagement":"index.jsp?content=jobs/20061027.htm",
+		"MortgageLendingAccountExecutive:Sales":"index.jsp?content=jobs/20061024.htm"
+};
+
 function loadPage() {
 	if (document.location.hash == "#alljobs") {
 		document.location.hash = "";
@@ -22,7 +32,12 @@ function loadPage() {
 		if (sp.length == 2 && jobs[sp[1]] && jobs[sp[1]] != "") {
 			/* check if job exists */
 			if (jobs[sp[1]][sp[0]] && jobs[sp[1]][sp[0]] != "") {
-				document.location.href = "index.jsp?content="+jobs[sp[1]][sp[0]];
+				/* redirect only to a predefined destination; never use the raw parameter */
+				if (jobPages.hasOwnProperty(job)) {
+					document.location.href = jobPages[job];
+				} else {
+					document.location.href = "index.jsp?content=inside_jobs.htm";
+				}
 			} else {
 				/* tell the user the job isn't open anymore */
 				document.write("<h2 style='color:#ff0000'>We're sorry, but it appears the position for " + sp[0] + " in group " + sp[1] + " is not open anymore</h2>");
