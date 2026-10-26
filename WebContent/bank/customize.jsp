@@ -20,6 +20,20 @@ IBM AltoroJ
 (c) Copyright IBM Corp. 2008, 2013 All Rights Reserved.
 */
 %> 
+
+<%!
+	/*
+	 * Fixed allow-list of redirect destinations for the 'content' parameter.
+	 * The parameter is only ever used as a lookup key into this map, never as a
+	 * URL: every value below is a literal internal path, so no request-supplied
+	 * value can reach sendRedirect(). Keys that are not in the map (including
+	 * external http/https URLs) result in no redirect and the page is rendered.
+	 */
+	private static final java.util.Map<String,String> REDIRECT_ROUTES = new java.util.HashMap<String,String>();
+	static {
+		REDIRECT_ROUTES.put("customize", "customize.jsp");
+	}
+%>
     
 <jsp:include page="/header.jspf"/>
 
@@ -30,10 +44,13 @@ IBM AltoroJ
 		
 		<%
 			String content = request.getParameter("content");
-			if (content != null && !content.equalsIgnoreCase("customize.jsp")){
-				if (content.startsWith("http://") || content.startsWith("https://")){
-					response.sendRedirect(content);
-				}
+			/* "customize.jsp" is this page's own value (used by the language links
+			   below); a self redirect would drop ?lang=, so it is a no-op here. */
+			String destination = (content == null || content.equalsIgnoreCase("customize.jsp"))
+					? null
+					: REDIRECT_ROUTES.get(content);
+			if (destination != null){
+				response.sendRedirect(destination);
 			}
 		%>
 		
