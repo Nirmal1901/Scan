@@ -29,13 +29,17 @@ function loadPage() {
 	/* check if job parameter exists */
 	var job = getParameter("job");
 	if (job && job.length > 0) {
-		var dest = ROUTES[job];
-		if (dest) {
-			document.location.href = dest;
+		/* only keys defined in the hard-coded table above are honoured; the
+		   own-property test keeps inherited Object.prototype members
+		   (toString, constructor, valueOf, ...) from ever matching */
+		if (Object.prototype.hasOwnProperty.call(ROUTES, job)) {
+			/* destination is the hard-coded table entry itself, never a value
+			   derived from the request parameter */
+			document.location.href = ROUTES[job];
 			return;
 		}
 		var sp = job.split(':');
-		if (sp.length == 2 && GROUPS[sp[1]]) {
+		if (sp.length == 2 && Object.prototype.hasOwnProperty.call(GROUPS, sp[1])) {
 			/* tell the user the job isn't open anymore */
 			document.getElementById("jobMsg").textContent = "We're sorry, but it appears the position for " + sp[0] + " in group " + sp[1] + " is not open anymore";
 		} else {
