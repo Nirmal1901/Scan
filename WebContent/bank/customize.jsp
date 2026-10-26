@@ -1,3 +1,4 @@
+<%@ page import="org.apache.commons.lang3.StringEscapeUtils" %>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 
@@ -44,6 +45,7 @@ IBM AltoroJ
 		
 		<%
 			String content = request.getParameter("content");
+			String lang = request.getParameter("lang");
 			/* "customize.jsp" is this page's own value (used by the language links
 			   below); a self redirect would drop ?lang=, so it is a no-op here. */
 			String destination = (content == null || content.equalsIgnoreCase("customize.jsp"))
@@ -58,7 +60,7 @@ IBM AltoroJ
 		
 		<form method="post">
 		  <p>
-		  Current Language: <%=(request.getParameter("lang")==null)?"":request.getParameter("lang")%>
+		  Current Language: <%= (lang == null) ? "" : StringEscapeUtils.escapeHtml4(lang) %>
 		  </p>
 		
 		  <p>
