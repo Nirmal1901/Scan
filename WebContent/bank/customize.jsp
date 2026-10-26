@@ -28,15 +28,6 @@ IBM AltoroJ
     <td valign="top" colspan="3" class="bb">
 		<div class="fl" style="width: 99%;">
 		
-		<%
-			String content = request.getParameter("content");
-			if (content != null && !content.equalsIgnoreCase("customize.jsp")){
-				if (content.startsWith("http://") || content.startsWith("https://")){
-					response.sendRedirect(content);
-				}
-			}
-		%>
-		
 		<h1>Customize Site Language</h1>
 		
 		<form method="post">
