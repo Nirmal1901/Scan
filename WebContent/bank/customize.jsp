@@ -1,5 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
+<%@page import="org.apache.commons.lang.StringEscapeUtils"%>
 
 <%
 /**
@@ -32,7 +33,8 @@ IBM AltoroJ
 		
 		<form method="post">
 		  <p>
-		  Current Language: <%=(request.getParameter("lang")==null)?"":request.getParameter("lang")%>
+		  <% String lang = request.getParameter("lang"); %>
+		  Current Language: <%= (lang == null) ? "" : StringEscapeUtils.escapeHtml(lang) %>
 		  </p>
 		
 		  <p>
