@@ -9,14 +9,27 @@
   </style>
   <script>
 
+    // Allow-list of redirect destinations. The url= query string is only used to
+    // pick a key in this table; it is never used as the redirect target itself.
+    var ROUTES = {
+      "altoro": "http://altoromutual.com/",
+      "ibm": "http://www.ibm.com/",
+      "http://www.netscape.com": "http://www.netscape.com",
+      "http://www.microsoft.com": "http://www.microsoft.com"
+    };
+
     function go() {
 	    var iPos = document.URL.indexOf("url=")+4;
-    	var sDst = document.URL.substring(iPos,document.URL.length); 
+    var sKey = document.URL.substring(iPos, document.URL.length);
+    var qPos = sKey.indexOf("&");
+    if (qPos != -1) {
+      sKey = sKey.substring(0, qPos);
+    }
         if (window.opener) {
-      		window.opener.location.href = sDst;
+      		window.opener.location.href = ROUTES[sKey] || "index.htm";
       		cl();
         } else {
-        	window.location.href = sDst;
+        	window.location.href = ROUTES[sKey] || "index.htm";
         }
     }
 
@@ -25,16 +38,14 @@
     }
 
     var iPos = document.URL.indexOf("url=")+4;
-  	var sDst = document.URL.substring(iPos,document.URL.length);
-    // if redirection is in the application's domain, don't ask for authorization
-	if ( sDst.indexOf("http") == 0 && sDst.indexOf(document.location.hostname) != -1 ) {
-		if (window.opener) {
-      		window.opener.location.href = "http" + sDst.substring(4);
-      		cl();
-        } else {
-        	window.location.href = "http" + sDst.substring(4);
-        }
-	}
+    var sKey = document.URL.substring(iPos, document.URL.length);
+    var qPos = sKey.indexOf("&");
+    if (qPos != -1) {
+      sKey = sKey.substring(0, qPos);
+    }
+  	var sDst = ROUTES[sKey] || "index.htm";
+    // Destinations are all external literals from the allow-list above; there is
+    // no "same domain" shortcut, so the user always sees this warning page first.
 
 	</script>
 </head>
