@@ -9,14 +9,21 @@
   </style>
   <script>
 
+// Hard-coded allow-list of destinations. The 'url' query parameter is only
+    // used as a lookup key into this table, never as a navigation target.
+    var ROUTES = {
+      'http://www.netscape.com':'http://www.netscape.com',
+      'http://www.microsoft.com':'http://www.microsoft.com'
+    };
+
     function go() {
 	    var iPos = document.URL.indexOf("url=")+4;
     	var sDst = document.URL.substring(iPos,document.URL.length); 
         if (window.opener) {
-      		window.opener.location.href = sDst;
+      		window.opener.location.href = ROUTES[sDst] || 'index.jsp';
       		cl();
         } else {
-        	window.location.href = sDst;
+        	window.location.href = ROUTES[sDst] || 'index.jsp';
         }
     }
 
@@ -26,15 +33,8 @@
 
     var iPos = document.URL.indexOf("url=")+4;
   	var sDst = document.URL.substring(iPos,document.URL.length);
-    // if redirection is in the application's domain, don't ask for authorization
-	if ( sDst.indexOf("http") == 0 && sDst.indexOf(document.location.hostname) != -1 ) {
-		if (window.opener) {
-      		window.opener.location.href = "http" + sDst.substring(4);
-      		cl();
-        } else {
-        	window.location.href = "http" + sDst.substring(4);
-        }
-	}
+    // No automatic redirect on load: navigation only happens from go() and only
+    // to a destination from the ROUTES allow-list.
 
 	</script>
 </head>
@@ -47,7 +47,8 @@
       <td>
         <p>This hyperlink allows you to access a third party website:
         <br /><br />
-        <b><script>document.write(encodeURI(sDst));</script></b>
+        <b id="dst"></b>
+        <script>document.getElementById('dst').textContent = sDst;</script>
         <br /><br />
         Please read the privacy policy of the linked website, which
         may differ from the privacy policy of the Altoro Mutual website.
