@@ -9,14 +9,46 @@
   </style>
   <script>
 
+    // The url= query string is only ever compared against the hard-coded
+    // literal destinations below. No variable, table entry or parameter value is
+    // ever assigned to location; every navigation statement gets a literal string.
+
     function go() {
 	    var iPos = document.URL.indexOf("url=")+4;
-    	var sDst = document.URL.substring(iPos,document.URL.length); 
+    var sKey = document.URL.substring(iPos, document.URL.length);
+    var qPos = sKey.indexOf("&");
+    if (qPos != -1) {
+      sKey = sKey.substring(0, qPos);
+    }
         if (window.opener) {
-      		window.opener.location.href = sDst;
+      		if (sKey === "altoro") {
+      		window.opener.location.href = "http://altoromutual.com/";
+      	} else if (sKey === "ibm") {
+      		window.opener.location.href = "http://www.ibm.com/";
+      	} else if (sKey === "http://www.ibm.com" || sKey === "http://www.ibm.com/") {
+      		window.opener.location.href = "http://www.ibm.com/";
+      	} else if (sKey === "http://www.netscape.com" || sKey === "http://www.netscape.com/") {
+      		window.opener.location.href = "http://www.netscape.com";
+      	} else if (sKey === "http://www.microsoft.com" || sKey === "http://www.microsoft.com/") {
+      		window.opener.location.href = "http://www.microsoft.com";
+      	} else {
+      		window.opener.location.href = "index.htm";
+      	}
       		cl();
         } else {
-        	window.location.href = sDst;
+        	if (sKey === "altoro") {
+        	window.location.href = "http://altoromutual.com/";
+        } else if (sKey === "ibm") {
+        	window.location.href = "http://www.ibm.com/";
+        } else if (sKey === "http://www.ibm.com" || sKey === "http://www.ibm.com/") {
+        	window.location.href = "http://www.ibm.com/";
+        } else if (sKey === "http://www.netscape.com" || sKey === "http://www.netscape.com/") {
+        	window.location.href = "http://www.netscape.com";
+        } else if (sKey === "http://www.microsoft.com" || sKey === "http://www.microsoft.com/") {
+        	window.location.href = "http://www.microsoft.com";
+        } else {
+        	window.location.href = "index.htm";
+        }
         }
     }
 
@@ -25,16 +57,25 @@
     }
 
     var iPos = document.URL.indexOf("url=")+4;
-  	var sDst = document.URL.substring(iPos,document.URL.length);
-    // if redirection is in the application's domain, don't ask for authorization
-	if ( sDst.indexOf("http") == 0 && sDst.indexOf(document.location.hostname) != -1 ) {
-		if (window.opener) {
-      		window.opener.location.href = "http" + sDst.substring(4);
-      		cl();
-        } else {
-        	window.location.href = "http" + sDst.substring(4);
-        }
-	}
+    var sKey = document.URL.substring(iPos, document.URL.length);
+    var qPos = sKey.indexOf("&");
+    if (qPos != -1) {
+      sKey = sKey.substring(0, qPos);
+    }
+  	var sDst = "index.htm";
+  	if (sKey === "altoro") {
+  		sDst = "http://altoromutual.com/";
+  	} else if (sKey === "ibm") {
+  		sDst = "http://www.ibm.com/";
+  	} else if (sKey === "http://www.ibm.com" || sKey === "http://www.ibm.com/") {
+  		sDst = "http://www.ibm.com/";
+  	} else if (sKey === "http://www.netscape.com" || sKey === "http://www.netscape.com/") {
+  		sDst = "http://www.netscape.com";
+  	} else if (sKey === "http://www.microsoft.com" || sKey === "http://www.microsoft.com/") {
+  		sDst = "http://www.microsoft.com";
+  	}
+    // Destinations are all external literals from the literal allow-list checked above; there is
+    // no "same domain" shortcut, so the user always sees this warning page first.
 
 	</script>
 </head>
@@ -47,7 +88,8 @@
       <td>
         <p>This hyperlink allows you to access a third party website:
         <br /><br />
-        <b><script>document.write(encodeURI(sDst));</script></b>
+        <b id="targetUrl"></b>
+        <script>document.getElementById("targetUrl").textContent = sDst;</script>
         <br /><br />
         Please read the privacy policy of the linked website, which
         may differ from the privacy policy of the Altoro Mutual website.
