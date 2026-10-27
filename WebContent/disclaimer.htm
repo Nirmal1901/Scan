@@ -9,14 +9,9 @@
   </style>
   <script>
 
-    // Allow-list of redirect destinations. The url= query string is only used to
-    // pick a key in this table; it is never used as the redirect target itself.
-    var ROUTES = {
-      "altoro": "http://altoromutual.com/",
-      "ibm": "http://www.ibm.com/",
-      "http://www.netscape.com": "http://www.netscape.com",
-      "http://www.microsoft.com": "http://www.microsoft.com"
-    };
+    // The url= query string is only ever compared against the hard-coded
+    // literal destinations below. No variable, table entry or parameter value is
+    // ever assigned to location; every navigation statement gets a literal string.
 
     function go() {
 	    var iPos = document.URL.indexOf("url=")+4;
@@ -26,10 +21,34 @@
       sKey = sKey.substring(0, qPos);
     }
         if (window.opener) {
-      		window.opener.location.href = ROUTES[sKey] || "index.htm";
+      		if (sKey === "altoro") {
+      		window.opener.location.href = "http://altoromutual.com/";
+      	} else if (sKey === "ibm") {
+      		window.opener.location.href = "http://www.ibm.com/";
+      	} else if (sKey === "http://www.ibm.com" || sKey === "http://www.ibm.com/") {
+      		window.opener.location.href = "http://www.ibm.com/";
+      	} else if (sKey === "http://www.netscape.com" || sKey === "http://www.netscape.com/") {
+      		window.opener.location.href = "http://www.netscape.com";
+      	} else if (sKey === "http://www.microsoft.com" || sKey === "http://www.microsoft.com/") {
+      		window.opener.location.href = "http://www.microsoft.com";
+      	} else {
+      		window.opener.location.href = "index.htm";
+      	}
       		cl();
         } else {
-        	window.location.href = ROUTES[sKey] || "index.htm";
+        	if (sKey === "altoro") {
+        	window.location.href = "http://altoromutual.com/";
+        } else if (sKey === "ibm") {
+        	window.location.href = "http://www.ibm.com/";
+        } else if (sKey === "http://www.ibm.com" || sKey === "http://www.ibm.com/") {
+        	window.location.href = "http://www.ibm.com/";
+        } else if (sKey === "http://www.netscape.com" || sKey === "http://www.netscape.com/") {
+        	window.location.href = "http://www.netscape.com";
+        } else if (sKey === "http://www.microsoft.com" || sKey === "http://www.microsoft.com/") {
+        	window.location.href = "http://www.microsoft.com";
+        } else {
+        	window.location.href = "index.htm";
+        }
         }
     }
 
@@ -43,8 +62,19 @@
     if (qPos != -1) {
       sKey = sKey.substring(0, qPos);
     }
-  	var sDst = ROUTES[sKey] || "index.htm";
-    // Destinations are all external literals from the allow-list above; there is
+  	var sDst = "index.htm";
+  	if (sKey === "altoro") {
+  		sDst = "http://altoromutual.com/";
+  	} else if (sKey === "ibm") {
+  		sDst = "http://www.ibm.com/";
+  	} else if (sKey === "http://www.ibm.com" || sKey === "http://www.ibm.com/") {
+  		sDst = "http://www.ibm.com/";
+  	} else if (sKey === "http://www.netscape.com" || sKey === "http://www.netscape.com/") {
+  		sDst = "http://www.netscape.com";
+  	} else if (sKey === "http://www.microsoft.com" || sKey === "http://www.microsoft.com/") {
+  		sDst = "http://www.microsoft.com";
+  	}
+    // Destinations are all external literals from the literal allow-list checked above; there is
     // no "same domain" shortcut, so the user always sees this warning page first.
 
 	</script>
