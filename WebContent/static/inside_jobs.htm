@@ -1,17 +1,6 @@
 <!-- Keywords:Altoro Mutual, careers, opportunities, jobs, management -->
 <script>
 
-/* hard-coded destinations: the job token from the query string is only used as
-   a key into this table, never concatenated into a URL */
-var ROUTES = {
-		"ExecutiveAssistant:Administration":"index.jsp?content=jobs/20061023.htm",
-		"Teller:ConsumaerBanking":"index.jsp?content=jobs/20061019.htm",
-		"CustomerServiceRepresentative:CustomerService":"index.jsp?content=jobs/20061026.htm",
-		"LoyaltyMarketingProgramManager:Marketing":"index.jsp?content=jobs/20061025.htm",
-		"OperationalRiskManager:RiskManagement":"index.jsp?content=jobs/20061027.htm",
-		"MortgageLendingAccountExecutive:Sales":"index.jsp?content=jobs/20061024.htm"
-};
-
 var GROUPS = {
 		"Administration":"1",
 		"ConsumaerBanking":"1",
@@ -29,13 +18,30 @@ function loadPage() {
 	/* check if job parameter exists */
 	var job = getParameter("job");
 	if (job && job.length > 0) {
-		/* only keys defined in the hard-coded table above are honoured; the
-		   own-property test keeps inherited Object.prototype members
-		   (toString, constructor, valueOf, ...) from ever matching */
-		if (Object.prototype.hasOwnProperty.call(ROUTES, job)) {
-			/* destination is the hard-coded table entry itself, never a value
-			   derived from the request parameter */
-			document.location.href = ROUTES[job];
+		/* hard-coded destinations: the job token is only ever compared for
+		   equality against these literals, never used to build a URL */
+		if (job == "ExecutiveAssistant:Administration") {
+			document.location.href = "index.jsp?content=jobs/20061023.htm";
+			return;
+		}
+		if (job == "Teller:ConsumaerBanking") {
+			document.location.href = "index.jsp?content=jobs/20061019.htm";
+			return;
+		}
+		if (job == "CustomerServiceRepresentative:CustomerService") {
+			document.location.href = "index.jsp?content=jobs/20061026.htm";
+			return;
+		}
+		if (job == "LoyaltyMarketingProgramManager:Marketing") {
+			document.location.href = "index.jsp?content=jobs/20061025.htm";
+			return;
+		}
+		if (job == "OperationalRiskManager:RiskManagement") {
+			document.location.href = "index.jsp?content=jobs/20061027.htm";
+			return;
+		}
+		if (job == "MortgageLendingAccountExecutive:Sales") {
+			document.location.href = "index.jsp?content=jobs/20061024.htm";
 			return;
 		}
 		var sp = job.split(':');
