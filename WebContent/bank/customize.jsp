@@ -30,10 +30,12 @@ IBM AltoroJ
 		
 		<%
 			String content = request.getParameter("content");
-			if (content != null && !content.equalsIgnoreCase("customize.jsp")){
-				if (content.startsWith("http://") || content.startsWith("https://")){
-					response.sendRedirect(content);
-				}
+			if ("customize.jsp".equalsIgnoreCase(content)) {
+				// render this page, no redirect
+			} else if ("index.jsp".equals(content)) {
+				response.sendRedirect("index.jsp");
+			} else if ("login.jsp".equals(content)) {
+				response.sendRedirect("login.jsp");
 			}
 		%>
 		
